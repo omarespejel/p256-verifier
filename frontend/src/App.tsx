@@ -132,10 +132,14 @@ Try the demo:`
         </div>
         <h1>EIP-7212 Verifier</h1>
         <p className="tagline">Native P-256 signature verification on Ethereum</p>
+        <p className="hero-explainer">
+          This demo verifies a <strong>P-256 signature</strong>—the same curve used by Face ID and
+          YubiKeys—directly on Ethereum via the <code>0x0100</code> precompile.
+        </p>
         {verifyResult?.blockNumber && (
-          <div className="live-badge">
-            <span className="pulse" />
-            Mainnet Block #{verifyResult.blockNumber.toString()}
+          <div className="network-badge">
+            <span className="live-dot" />
+            Ethereum Mainnet • Block #{verifyResult.blockNumber.toString()}
           </div>
         )}
       </header>
@@ -355,20 +359,26 @@ Try the demo:`
                     <span className="stat-value">0x0100</span>
                     <span className="stat-label">Precompile</span>
                   </div>
+                  <div className="stat">
+                    <span className="stat-value">
+                      {verifyResult.totalCallGas?.toString() ?? '—'}
+                    </span>
+                    <span className="stat-label">Total Call Gas</span>
+                  </div>
                 </div>
 
                 <div className="comparison">
                   <h4>Gas Comparison</h4>
                   <div className="comparison-bars">
                     <div className="bar-row">
-                      <span className="bar-label">Solidity (before)</span>
+                      <span className="bar-label">P-256 in Solidity (before Fusaka)</span>
                       <div className="bar old">
                         <div className="bar-fill" />
                       </div>
                       <span className="bar-value">~200,000</span>
                     </div>
                     <div className="bar-row">
-                      <span className="bar-label">EIP-7212 (now)</span>
+                      <span className="bar-label">Native Precompile (after Fusaka)</span>
                       <div className="bar new">
                         <div
                           className="bar-fill"
@@ -391,6 +401,20 @@ Try the demo:`
                     signatures on-chain, making seed phrases optional.
                   </p>
                 </InfoCard>
+
+                <div className="explainer-card">
+                  <h4>🎓 What just happened?</h4>
+                  <ol>
+                    <li>The browser minted a P-256 keypair.</li>
+                    <li>It signed your message with ECDSA.</li>
+                    <li>It called Ethereum mainnet directly.</li>
+                    <li>The precompile verified the signature.</li>
+                  </ol>
+                  <p>
+                    <strong>This unlocks:</strong> wallets that trust Face ID, Touch ID, or a hardware
+                    key—no seed phrase required.
+                  </p>
+                </div>
 
                 <div className="share-row">
                   {shareUrl && (
@@ -422,29 +446,23 @@ Try the demo:`
           <a href="https://eips.ethereum.org/EIPS/eip-7212" target="_blank" rel="noreferrer">
             EIP-7212
           </a>
-          <span>·</span>
-          <a
-            href="https://github.com/espejelomar/eip-7951-demo"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <span>•</span>
+          <a href="https://github.com/omarespejel/p256-verifier" target="_blank" rel="noreferrer">
             GitHub
           </a>
-          <span>·</span>
-          <a href="https://ethereum.org" target="_blank" rel="noreferrer">
-            ethereum.org
-          </a>
-          <span>·</span>
-          <a href="https://starknet.io" target="_blank" rel="noreferrer">
-            starknet.io
-          </a>
+          <span>•</span>
+          <span>
+            Built at{' '}
+            <a href="https://starknet.io" target="_blank" rel="noreferrer">
+              @Starknet
+            </a>
+          </span>
         </div>
         <p className="footer-credit">
-          Built by{' '}
+          Crafted by{' '}
           <a href="https://twitter.com/espejelomar" target="_blank" rel="noreferrer">
             @espejelomar
-          </a>{' '}
-          at Starknet Foundation
+          </a>
         </p>
       </footer>
     </div>

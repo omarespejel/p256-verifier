@@ -217,12 +217,14 @@ export interface VerifyParams {
 export interface VerifyResult {
   valid: boolean
   gasUsed?: bigint
+  totalCallGas?: bigint
   blockNumber?: bigint
   rpcLatency?: number
   error?: string
 }
 
-const PRECOMPILE_GAS = 3450n
+const PRECOMPILE_GAS_FALLBACK = 3450n
+const BASE_OVERHEAD = 21000n + 160n * 16n
 
 export const verifyOnChain = async (
   params: VerifyParams,
@@ -238,6 +240,11 @@ export const verifyOnChain = async (
 
     const calldata = buildCalldata(params)
     const blockNumber = await client.getBlockNumber({ cacheTime: 0 })
+    const fullGas = await client.estimateGas({
+      to: P256_PRECOMPILE,
+      data: calldata
+    })
+
     const response = await client.call({
       to: P256_PRECOMPILE,
       data: calldata,
@@ -251,11 +258,15 @@ export const verifyOnChain = async (
         ? response
         : (response as { data?: Hex }).data
 
+    const precompileGas =
+      fullGas > BASE_OVERHEAD ? fullGas - BASE_OVERHEAD : PRECOMPILE_GAS_FALLBACK
+
     if (!data || data === '0x' || data === '0x0') {
       return {
         valid: false,
         error: 'Empty response (precompile not active)',
-        gasUsed: PRECOMPILE_GAS,
+        gasUsed: precompileGas,
+        totalCallGas: fullGas,
         blockNumber,
         rpcLatency
       }
@@ -268,7 +279,13 @@ export const verifyOnChain = async (
       normalized === '0x01' ||
       normalized === '0x1'
 
-    return { valid, gasUsed: PRECOMPILE_GAS, blockNumber, rpcLatency }
+    return {
+      valid,
+      gasUsed: precompileGas,
+      totalCallGas: fullGas,
+      blockNumber,
+      rpcLatency
+    }
   } catch (error) {
     const rpcLatency = Math.round(performance.now() - start)
     const message =
