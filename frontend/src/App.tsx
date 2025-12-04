@@ -447,7 +447,7 @@ Try the demo:`
                 </InfoCard>
 
                 <div className="explainer-card">
-                  <h4>🎓 What just happened?</h4>
+                  <h4>🧠 What just happened?</h4>
                   <ol>
                     <li>The browser minted a P-256 keypair.</li>
                     <li>It signed your message with ECDSA.</li>
@@ -468,7 +468,7 @@ Try the demo:`
                       rel="noopener noreferrer"
                       className="btn share"
                     >
-                      Share on X
+                      🚀 Share on X
                     </a>
                   )}
                 </div>
